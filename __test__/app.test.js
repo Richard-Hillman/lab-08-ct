@@ -124,7 +124,7 @@ describe('tests', () => {
 
   it('deletes a models', async() => {
 
-    const models = await ModelS.insert({ 
+    const tesla = await ModelS.insert({ 
       title: 'Model S',
       descript: 'an evolution in automobile engineering. Dual Motor Model S is a categorical improvement on conventional all-wheel drive systems. With two motors, one in the front and one in the rear, Model S digitally and independently controls torque to the front and rear wheels.', 
       model: 'Long Range Plus',
@@ -134,16 +134,8 @@ describe('tests', () => {
     });
 
     const res = await request(app)
-      .delete(`/tesla/model_s/${models.id}`);
-    expect(res.data).toEqual({
-      id: '1',
-      title: 'Model S',
-      descript: 'an evolution in automobile engineering. Dual Motor Model S is a categorical improvement on conventional all-wheel drive systems. With two motors, one in the front and one in the rear, Model S digitally and independently controls torque to the front and rear wheels.', 
-      model: 'Long Range Plus',
-      color: 'Solid Black',
-      wheelType: '19inch Tempest',
-      interior: 'Cream'
-    });
+      .delete(`/tesla/model_s/${tesla.id}`);
+    expect(res.body).toEqual(tesla);
   });
 
 
