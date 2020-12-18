@@ -158,7 +158,7 @@ describe('tests', () => {
     };
 
     const data = await request(app)
-      .post('/tesla/cyber_truck')
+      .post('/tesla/cybertruck')
       .send(post)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -167,48 +167,43 @@ describe('tests', () => {
 
   // -----------------------------------------------------
 
-  it('gets all rows from cyber_trucks table', async() => {
+  it('gets all rows from cybertruck table', async() => {
   
-    const expectation = [
-      {
-        id: '1',
+    await request(app)
+    
+      .post('/tesla/cybertruck')
+      .send({
         title: 'truck',
         descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
         color: 'silver'
-      }
-    ];
-  
+      });
 
-    const data = await request(app) 
-      .get('/tesla/cyber_truck/')
-      .expect('Content-Type', /json/)
-      .expect(200);
-    expect(data.body).toEqual(expectation); 
+    const cybertruck = await request(app)
+
+      .get('/tesla/cybertruck');
     
+    expect(cybertruck.body).toEqual([{
+      id: '1',
+      title: 'truck',
+      descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
+      color: 'silver'
+    }]);
   });
 
   // -----------------------------------------------------
   
   it('get cybertruck by id', async() => { 
-
     const tesla = await CyberTruck.insert({
-      id: '1',
       title: 'truck',
       descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
       color: 'silver'
     });
 
     const response = await request(app)
-      .get(`/tesla/cyber_truck/${tesla.id}`)
-      .send({ 
-        title: 'truck',
-        descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
-        color: 'silver'
-      });
-
+      .get(`/tesla/cybertruck/${tesla.id}`);      
+    
     expect(response.body).toEqual({
-      ...tesla,
-      id: '2',
+      id: tesla.id,
       title: 'truck',
       descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
       color: 'silver'
@@ -218,19 +213,19 @@ describe('tests', () => {
   //   -----------------------------------------------------
 
   it('deletes a cybertruck', async() => {
-    const expectation = {
-      id: '1',
+
+    const tesla = await CyberTruck.insert({
       title: 'truck',
       descript: 'The Tesla Cybertruck is an all-electric, battery-powered, light duty truck announced by Tesla, Inc. Three models have been announced, with EPA range estimates of 250–500 miles (400–800 km) and an estimated 0–60 mph time of 2.9–6.5 seconds, depending on the model.',
       color: 'silver'
-    };
+    });
 
     const data = await request(app)
-      .delete('/tesla/cyber_truck/1')
+      .delete(`/tesla/cybertruck/${tesla.id}`)
       .expect('Content-Type', /json/)
       .expect(200);
 
-    expect(data.body).toEqual(expectation);
+    expect(data.body).toEqual(tesla);
 
   });
 
